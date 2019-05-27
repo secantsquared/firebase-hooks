@@ -1,4 +1,7 @@
 /src/firebase/config.js
+build/
+build
+adminConfig.json
 # Logs
 logs
 *.log
