@@ -48,7 +48,7 @@ function Header(props) {
           </>
         ) : (
           <NavLink to="/login" className="header-link">
-            login
+            Login
           </NavLink>
         )}
       </div>
