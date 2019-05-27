@@ -1,14 +1,15 @@
-import React from "react";
-import useFormValidation from "./useFormValidation";
-import validateLogin from "./validateLogin";
+import React from 'react'
+import useFormValidation from './useFormValidation'
+import validateLogin from './validateLogin'
+import firebase from '../../firebase'
 
 const INITIAL_STATE = {
-  name: "",
-  email: "",
-  password: ""
-};
+  name: '',
+  email: '',
+  password: ''
+}
 
-function Login(props) {
+function Login() {
   const {
     handleSubmit,
     handleBlur,
@@ -16,12 +17,20 @@ function Login(props) {
     values,
     errors,
     isSubmitting
-  } = useFormValidation(INITIAL_STATE, validateLogin);
-  const [login, setLogin] = React.useState(true);
+  } = useFormValidation(INITIAL_STATE, validateLogin, authenticateUser)
+  const [login, setLogin] = React.useState(true)
+
+  async function authenticateUser() {
+    const { name, email, password } = values
+    const response = login
+      ? await firebase.login(email, password)
+      : await firebase.register(name, email, password)
+    console.log({ response })
+  }
 
   return (
     <div>
-      <h2 className="mv3">{login ? "Login" : "Create Account"}</h2>
+      <h2 className="mv3">{login ? 'Login' : 'Create Account'}</h2>
       <form onSubmit={handleSubmit} className="flex flex-column">
         {!login && (
           <input
@@ -39,7 +48,7 @@ function Login(props) {
           value={values.email}
           name="email"
           type="email"
-          className={errors.email && "error-input"}
+          className={errors.email && 'error-input'}
           placeholder="Your email"
           autoComplete="off"
         />
@@ -48,7 +57,7 @@ function Login(props) {
           onChange={handleChange}
           onBlur={handleBlur}
           value={values.password}
-          className={errors.password && "error-input"}
+          className={errors.password && 'error-input'}
           name="password"
           type="password"
           placeholder="Choose a secure password"
@@ -59,7 +68,7 @@ function Login(props) {
             type="submit"
             className="button pointer mr2"
             disabled={isSubmitting}
-            style={{ background: isSubmitting ? "grey" : "orange" }}
+            style={{ background: isSubmitting ? 'grey' : 'orange' }}
           >
             Submit
           </button>
@@ -68,12 +77,12 @@ function Login(props) {
             className="pointer button"
             onClick={() => setLogin(prevLogin => !prevLogin)}
           >
-            {login ? "need to create an account?" : "already have an account?"}
+            {login ? 'need to create an account?' : 'already have an account?'}
           </button>
         </div>
       </form>
     </div>
-  );
+  )
 }
 
-export default Login;
+export default Login
