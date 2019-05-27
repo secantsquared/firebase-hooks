@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import useFormValidation from './useFormValidation'
 import validateLogin from './validateLogin'
 import firebase from '../../firebase'
@@ -18,14 +18,19 @@ function Login() {
     errors,
     isSubmitting
   } = useFormValidation(INITIAL_STATE, validateLogin, authenticateUser)
-  const [login, setLogin] = React.useState(true)
+  const [login, setLogin] = useState(true)
+  const [authError, setAuthError] = useState(null)
 
   async function authenticateUser() {
     const { name, email, password } = values
-    const response = login
-      ? await firebase.login(email, password)
-      : await firebase.register(name, email, password)
-    console.log({ response })
+    try {
+      login
+        ? await firebase.login(email, password)
+        : await firebase.register(name, email, password)
+    } catch (err) {
+      console.error('Authentication Error', err)
+      setAuthError(err.message)
+    }
   }
 
   return (
@@ -61,8 +66,10 @@ function Login() {
           name="password"
           type="password"
           placeholder="Choose a secure password"
+          autoComplete="off"
         />
         {errors.password && <p className="error-text">{errors.password}</p>}
+        {authError && <p className="error-text">{authError}</p>}
         <div className="flex mt3">
           <button
             type="submit"
