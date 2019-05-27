@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 import useFormValidation from './useFormValidation'
 import validateLogin from './validateLogin'
 import firebase from '../../firebase'
@@ -89,6 +90,9 @@ function Login({ history }) {
           </button>
         </div>
       </form>
+      <div className="forgot-password">
+        <Link to="/forgot">Forgot Password?</Link>
+      </div>
     </div>
   )
 }
